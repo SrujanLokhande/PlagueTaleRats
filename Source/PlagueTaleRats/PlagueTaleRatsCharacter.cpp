@@ -39,6 +39,16 @@ APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
+	// Gun Mesh
+	GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Gun Mesh");
+	GunMesh->CastShadow = false;
+	GunMesh->SetOnlyOwnerSee(true);
+	GunMesh->SetupAttachment(RootComponent);
+
+	// MuzzleLocation
+	ShootPoint = CreateDefaultSubobject<USceneComponent>("Muzzle Location");
+	ShootPoint->SetupAttachment(GunMesh);
+
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
@@ -86,6 +96,9 @@ void APlagueTaleRatsCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &APlagueTaleRatsCharacter::Look);
+
+		// Shooting
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &ThisClass::Shoot);
 	}
 	else
 	{
@@ -126,5 +139,28 @@ void APlagueTaleRatsCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void APlagueTaleRatsCharacter::Shoot()
+{
+	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red, "SHooting");
+	FHitResult OutHit;
+	FVector Start = GunMesh->GetComponentLocation();
+
+	FVector ForwardVector = CameraBoom->GetForwardVector();
+	FVector End = ((ForwardVector * 1000.f) + Start);
+	FCollisionQueryParams CollisionParams;
+
+	DrawDebugLine(GetWorld(), Start, End, FColor::Green, true);
+
+	if(GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams)) 
+	{
+		if(OutHit.bBlockingHit)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("You are hitting: %s"), *OutHit.GetActor()->GetName()));
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Purple, FString::Printf(TEXT("Impact Point: %s"), *OutHit.ImpactPoint.ToString()));
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, FString::Printf(TEXT("Normal Point: %s"), *OutHit.ImpactNormal.ToString()));
+		}
 	}
 }

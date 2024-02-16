@@ -7,6 +7,8 @@
 #include "Logging/LogMacros.h"
 #include "PlagueTaleRatsCharacter.generated.h"
 
+class USceneComponent;
+class USkeletalMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
@@ -44,9 +46,21 @@ class APlagueTaleRatsCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
 
+	// Shoot Input Action
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = TexCreate_InputAttachmentRead, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ShootAction;
+
+
 public:
 	APlagueTaleRatsCharacter();
 	
+	// Gun Mesh
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
+	USkeletalMeshComponent* GunMesh;
+
+	// SHoot Point
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
+	USceneComponent* ShootPoint;
 
 protected:
 
@@ -55,6 +69,9 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	// Called for shooting
+	void Shoot();
 			
 
 protected:
