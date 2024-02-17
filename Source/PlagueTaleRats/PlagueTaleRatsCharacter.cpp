@@ -13,9 +13,6 @@
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-//////////////////////////////////////////////////////////////////////////
-// APlagueTaleRatsCharacter
-
 APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 {
 	// Set size for collision capsule
@@ -43,7 +40,7 @@ APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 	GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>("Gun Mesh");
 	GunMesh->CastShadow = false;
 	GunMesh->SetOnlyOwnerSee(true);
-	GunMesh->SetupAttachment(RootComponent);
+	GunMesh->SetupAttachment(R);
 
 	// MuzzleLocation
 	ShootPoint = CreateDefaultSubobject<USceneComponent>("Muzzle Location");
@@ -78,10 +75,6 @@ void APlagueTaleRatsCharacter::BeginPlay()
 		}
 	}
 }
-
-//////////////////////////////////////////////////////////////////////////
-// Input
-
 void APlagueTaleRatsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings

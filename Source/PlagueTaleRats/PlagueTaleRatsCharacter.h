@@ -47,7 +47,7 @@ class APlagueTaleRatsCharacter : public ACharacter
 	UInputAction* LookAction;
 
 	// Shoot Input Action
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = TexCreate_InputAttachmentRead, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shooting, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShootAction;
 
 
