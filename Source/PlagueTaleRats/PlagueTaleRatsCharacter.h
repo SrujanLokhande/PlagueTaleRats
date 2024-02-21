@@ -51,6 +51,7 @@ class APlagueTaleRatsCharacter : public ACharacter
 	UInputAction* ShootAction;
 
 
+
 public:
 	APlagueTaleRatsCharacter();
 	
@@ -62,6 +63,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
 	USceneComponent* ShootPoint;
 
+	// Niagara Damage Point
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
+	USceneComponent* HitDamagePoint;
+
+	// Weapon Socket for Weapon attachment
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = Gun)
+	FName WeaponSocket;
+	
 protected:
 
 	/** Called for movement input */
