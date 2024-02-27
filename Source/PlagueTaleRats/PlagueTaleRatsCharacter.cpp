@@ -78,7 +78,6 @@ APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 	CurrentHealthCpp = 100.0f;
 	IsShooting = false;
 	DistanceFromCamera = 500.0f;
-
 }
 
 void APlagueTaleRatsCharacter::BeginPlay()
