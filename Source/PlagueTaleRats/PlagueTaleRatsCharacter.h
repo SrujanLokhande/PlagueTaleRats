@@ -50,7 +50,17 @@ class APlagueTaleRatsCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shooting, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ShootAction;
 
+	// Is Player currently shooting
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shoot, meta = (AllowPrivateAccess = "true"))
+	bool IsShooting;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shoot, meta = (AllowPrivateAccess = "true"))
+	float DistanceFromCamera;
+	
+	FVector CameraLocation;
+	FRotator CameraRotation;
+	
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	APlagueTaleRatsCharacter();
@@ -59,7 +69,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
 	USkeletalMeshComponent* GunMesh;
 
-	// SHoot Point
+	// Shoot Point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
 	USceneComponent* ShootPoint;
 
@@ -71,6 +81,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = Gun)
 	FName WeaponSocket;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health, meta = (AllowPrivateAccess = "true"))
+	float CurrentHealthCpp;
+
+	/** Returns CameraBoom subobject **/
+	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	/** Returns FollowCamera subobject **/
+	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UFUNCTION()
+	void CustomTakeDamage();
+	
 protected:
 
 	/** Called for movement input */
@@ -81,19 +102,16 @@ protected:
 
 	// Called for shooting
 	void Shoot();
-			
 
-protected:
+	void StopShoot();
+
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
 	virtual void BeginPlay();
 
-public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	virtual void Tick(float DeltaSeconds);
+
 };
 

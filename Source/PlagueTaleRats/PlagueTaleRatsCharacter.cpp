@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "PlagueTaleRatsCharacter.h"
+
+#include <string.h>
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -10,11 +12,21 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Utils.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
+float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser)
+{
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 {
+	PrimaryActorTick.bCanEverTick = true;
+	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -62,8 +74,11 @@ APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
-	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+	// Character default health
+	CurrentHealthCpp = 100.0f;
+	IsShooting = false;
+	DistanceFromCamera = 500.0f;
+
 }
 
 void APlagueTaleRatsCharacter::BeginPlay()
@@ -78,8 +93,35 @@ void APlagueTaleRatsCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
+	}	
+}
+
+void APlagueTaleRatsCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	if(IsShooting)
+	{		
+		CameraLocation = FollowCamera->GetComponentLocation();
+		CameraRotation = FollowCamera->GetComponentRotation();
+
+		// gets the camera forward vector and adds it to the location to make the damage point damage the niagara 
+		CameraLocation = CameraLocation + CameraRotation.Vector() * DistanceFromCamera;
+		HitDamagePoint->SetWorldLocation(CameraLocation, false);			
+	}
+	else
+	{		
+		HitDamagePoint->SetWorldLocation(FVector(0.0f, 0.0f, 0.0f), false);		
 	}
 }
+
+void APlagueTaleRatsCharacter::CustomTakeDamage()
+{
+	CurrentHealthCpp = CurrentHealthCpp - 10;
+	// FString FloatAsString = FString::Printf(TEXT("%f"), CurrentHealthCpp);
+	// GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::Black,FloatAsString);
+}
+
 void APlagueTaleRatsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings
@@ -97,6 +139,7 @@ void APlagueTaleRatsCharacter::SetupPlayerInputComponent(UInputComponent* Player
 
 		// Shooting
 		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Started, this, &ThisClass::Shoot);
+		EnhancedInputComponent->BindAction(ShootAction, ETriggerEvent::Completed, this, &ThisClass::StopShoot);
 	}
 	else
 	{
@@ -141,6 +184,11 @@ void APlagueTaleRatsCharacter::Look(const FInputActionValue& Value)
 }
 
 void APlagueTaleRatsCharacter::Shoot()
+{	
+	IsShooting = true;
+}
+
+void APlagueTaleRatsCharacter::StopShoot()
 {
-	GEngine->AddOnScreenDebugMessage(1, 5.0f, FColor::Red, "SHooting");	
+	IsShooting = false;	
 }

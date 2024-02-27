@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "NiagaraActor.h"
+#include "NiagaraDataInterfaceExport.h"
 #include "NiagaraRatsComponent.generated.h"
 
 /**
@@ -14,8 +15,9 @@ class APlagueTaleRatsCharacter;
 class UNiagaraComponent;
 class UWorld;
 class UBoxComponent;
+
 UCLASS()
-class PLAGUETALERATS_API ANiagaraRatsComponent : public ANiagaraActor
+class PLAGUETALERATS_API ANiagaraRatsComponent : public ANiagaraActor, public INiagaraParticleCallbackHandler
 {
 	GENERATED_BODY()
 
@@ -31,6 +33,8 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+	virtual void ReceiveParticleData_Implementation(const TArray<FBasicParticleData>& Data, UNiagaraSystem* NiagaraSystem, const FVector& SimulationPositionOffset) override;
+	
 	
 protected:
 	
@@ -46,9 +50,25 @@ protected:
 	// Character Reference
 	TObjectPtr<APlagueTaleRatsCharacter> CharacterRef;
 
-	// World reference
-	TObjectPtr<UWorld> world;
 
 	// To check if player is in Attack Range
 	bool InAttackRange = false;
+
+private:
+	
+	// character gun damage point reference
+	USceneComponent* HitDamagePointRef;	
+
+	// World reference
+	TObjectPtr<UWorld> world;
+
+	// Niagara Damage Timer
+	int DamageTimer;
+
+	// timer
+	FTimerHandle DamageTimerHandle;
+
+	// give damage function
+	UFUNCTION()
+	void GiveDamage();
 };
