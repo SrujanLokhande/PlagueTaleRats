@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Srujan Lokhande 2024
 
 #include "PlagueTaleRatsGameMode.h"
 #include "PlagueTaleRatsCharacter.h"

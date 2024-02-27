@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Srujan Lokhande 2024
 
 #include "PlagueTaleRatsCharacter.h"
 
@@ -11,17 +11,12 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HealthComponent.h"
 #include "InputActionValue.h"
 #include "Utils.h"
-#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
-float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,
-	AController* EventInstigator, AActor* DamageCauser)
-{
-	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-}
 
 APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 {
@@ -74,6 +69,9 @@ APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Health Component
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>("Characters Health Component");
+
 	// Character default health
 	CurrentHealthCpp = 100.0f;
 	IsShooting = false;
@@ -98,6 +96,9 @@ void APlagueTaleRatsCharacter::BeginPlay()
 void APlagueTaleRatsCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	FString FloatAsString = FString::Printf(TEXT("%f"), HealthComponent->GetCurrentHealth());
+	LOG(-1, FloatAsString);	
 	
 	if(IsShooting)
 	{		
@@ -108,10 +109,6 @@ void APlagueTaleRatsCharacter::Tick(float DeltaSeconds)
 		CameraLocation = CameraLocation + CameraRotation.Vector() * DistanceFromCamera;
 		HitDamagePoint->SetWorldLocation(CameraLocation, false);			
 	}
-	else
-	{		
-		HitDamagePoint->SetWorldLocation(FVector(0.0f, 0.0f, 0.0f), false);		
-	}
 }
 
 void APlagueTaleRatsCharacter::CustomTakeDamage()
@@ -121,6 +118,18 @@ void APlagueTaleRatsCharacter::CustomTakeDamage()
 	// GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::Black,FloatAsString);
 }
 
+float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,	AController* EventInstigator, AActor* DamageCauser)
+{
+	const float returnValue =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	if(!IsValid(HealthComponent))
+	{
+		return returnValue;
+	}
+
+	HealthComponent->UpdateHealth(DamageAmount);
+	return returnValue;
+	
+}
 void APlagueTaleRatsCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Set up action bindings

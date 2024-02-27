@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright Srujan Lokhande 2024
 
 #pragma once
 
@@ -71,4 +71,7 @@ private:
 	// give damage function
 	UFUNCTION()
 	void GiveDamage();
+
+	UFUNCTION()
+	void DamagePlayer();
 };

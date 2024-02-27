@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Copyright Srujan Lokhande 2024
 
 #include "NiagaraRatsComponent.h"
 #include "NiagaraComponent.h"
@@ -35,29 +34,16 @@ void ANiagaraRatsComponent::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	
-	if(IsValid(CharacterRef->HitDamagePoint))
+	if(IsValid(CharacterRef))
 	{		
-		NiagaraParticleRef->SetNiagaraVariableVec3(FString("BulletPoint"), CharacterRef->HitDamagePoint->GetComponentLocation());	
+		NiagaraParticleRef->SetVariableVec3(FName("BulletPoint"), CharacterRef->HitDamagePoint->GetComponentLocation());	
 		
 		if(CharacterRef)
 		{			
 			NiagaraParticleRef->SetVariableVec3(FName("PlayerLocation"), CharacterRef->GetActorLocation());
+			NiagaraParticleRef->SetVariableBool(FName("IsPlayerShooting"), CharacterRef->GetIsShooting());
 			DamageTimer++;
-
-			// if the damage timer is less than 20 than give damage to player
-			if(DamageTimer < 20)			
-			{
-				DamageTimer += DamageTimer;
-				if(!DamageTimerHandle.IsValid())
-				{
-					world->GetTimerManager().SetTimer(DamageTimerHandle, this, &ANiagaraRatsComponent::GiveDamage, 1.0f, true);					
-				}				
-			}
-			else
-			{				
-				DamageTimer = 20.0f;				
-				world->GetTimerManager().ClearTimer(DamageTimerHandle);
-			}
+			DamagePlayer();
 		}
 	}
 	
@@ -78,10 +64,26 @@ void ANiagaraRatsComponent::EndOverlap(UPrimitiveComponent* OverlappedComponent,
 }
 
 void ANiagaraRatsComponent::GiveDamage()
+{	
+	UGameplayStatics::ApplyDamage(CharacterRef, 10.0f, GetInstigatorController(), this, UDamageType::StaticClass());			
+}
+
+void ANiagaraRatsComponent::DamagePlayer()
 {
-	CharacterRef->CustomTakeDamage();
-	//UGameplayStatics::ApplyDamage(CharacterRef, 10.0f, GetInstigatorController(), this, UDamageType::StaticClass());	
-	// CharacterRef->CurrentHealthCpp = CharacterRef->CurrentHealthCpp - 10;		
+	// if the damage timer is less than 20 than give damage to player
+	if(DamageTimer < 20 && !CharacterRef->GetIsShooting())			
+	{
+		DamageTimer += DamageTimer;
+		if(!DamageTimerHandle.IsValid())
+		{
+			world->GetTimerManager().SetTimer(DamageTimerHandle, this, &ANiagaraRatsComponent::GiveDamage, 1.0f, true);					
+		}				
+	}
+	else
+	{				
+		DamageTimer = 20.0f;				
+		world->GetTimerManager().ClearTimer(DamageTimerHandle);
+	}
 }
 
 void ANiagaraRatsComponent::BeginPlay()
@@ -91,14 +93,9 @@ void ANiagaraRatsComponent::BeginPlay()
 	world = GetWorld();
 	if(!IsValid(world)) return;
 
-	NiagaraParticleRef->SetNiagaraVariableObject(FString("CB_Interact"), this);
+	NiagaraParticleRef->SetVariableObject(FName("CB_Interact"), this);
 	
 	CharacterRef = Cast<APlagueTaleRatsCharacter>(UGameplayStatics::GetActorOfClass(world, APlagueTaleRatsCharacter::StaticClass()));
-	
-	// if(CharacterRef->HitDamagePoint)
-	// {
-	// 	HitDamagePointRef = CharacterRef->HitDamagePoint;
-	// }
 
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &ThisClass::BeginOverlap);
 	Collider->OnComponentEndOverlap.AddDynamic(this, &ThisClass::EndOverlap);	

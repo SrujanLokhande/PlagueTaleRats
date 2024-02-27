@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+// Copyright Srujan Lokhande 2024
 
 #pragma once
 
@@ -13,6 +13,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputMappingContext;
 class UInputAction;
+class UHealthComponent;
 struct FInputActionValue;
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
@@ -24,38 +25,43 @@ class APlagueTaleRatsCharacter : public ACharacter
 
 	/** Camera boom positioning the camera behind the character */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	UCameraComponent* FollowCamera;
+	TObjectPtr<UCameraComponent> FollowCamera;
 	
 	/** MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputMappingContext* DefaultMappingContext;
+	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 
 	/** Jump Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* JumpAction;
+	TObjectPtr<UInputAction> JumpAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* MoveAction;
+	TObjectPtr<UInputAction> MoveAction;
 
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	UInputAction* LookAction;
+	TObjectPtr<UInputAction> LookAction;
 
 	// Shoot Input Action
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shooting, meta = (AllowPrivateAccess = "true"))
-	UInputAction* ShootAction;
+	TObjectPtr<UInputAction> ShootAction;
 
 	// Is Player currently shooting
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shoot, meta = (AllowPrivateAccess = "true"))
 	bool IsShooting;
 
+	// HitPoint distance from the camera
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shoot, meta = (AllowPrivateAccess = "true"))
 	float DistanceFromCamera;
+
+	// Health Component
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shooting, meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> HealthComponent;
 	
 	FVector CameraLocation;
 	FRotator CameraRotation;
@@ -67,15 +73,15 @@ public:
 	
 	// Gun Mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
-	USkeletalMeshComponent* GunMesh;
+	TObjectPtr<USkeletalMeshComponent> GunMesh;
 
 	// Shoot Point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
-	USceneComponent* ShootPoint;
+	TObjectPtr<USceneComponent> ShootPoint;
 
 	// Niagara Damage Point
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gun)
-	USceneComponent* HitDamagePoint;
+	TObjectPtr<USceneComponent> HitDamagePoint;
 
 	// Weapon Socket for Weapon attachment
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = Gun)
@@ -86,8 +92,12 @@ public:
 
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+	
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	// returns if the player is shooting or not
+	FORCEINLINE bool GetIsShooting() const {return IsShooting;}
 
 	UFUNCTION()
 	void CustomTakeDamage();
