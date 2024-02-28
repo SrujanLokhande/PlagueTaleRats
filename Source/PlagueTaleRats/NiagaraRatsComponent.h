@@ -33,8 +33,9 @@ public:
 	
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
-	virtual void ReceiveParticleData_Implementation(const TArray<FBasicParticleData>& Data, UNiagaraSystem* NiagaraSystem, const FVector& SimulationPositionOffset) override;
-	
+
+	// Niagara particle ReceiveData from graph interface
+	virtual void ReceiveParticleData_Implementation(const TArray<FBasicParticleData>& Data, UNiagaraSystem* NiagaraSystem, const FVector& SimulationPositionOffset) override;	
 	
 protected:
 	
@@ -50,16 +51,17 @@ protected:
 	// Character Reference
 	TObjectPtr<APlagueTaleRatsCharacter> CharacterRef;
 
-
 	// To check if player is in Attack Range
 	bool InAttackRange = false;
 
 private:
 	
 	// character gun damage point reference
-	USceneComponent* HitDamagePointRef;	
+	UPROPERTY()
+	TObjectPtr<USceneComponent> HitDamagePointRef;	
 
 	// World reference
+	UPROPERTY()
 	TObjectPtr<UWorld> world;
 
 	// Niagara Damage Timer
