@@ -1,12 +1,12 @@
 // Copyright Srujan Lokhande 2024
 
 #pragma once
-
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "PlagueTaleRatsCharacter.generated.h"
 
+class APlagueTalePlayerController;
 class USceneComponent;
 class USkeletalMeshComponent;
 class USpringArmComponent;
@@ -62,6 +62,9 @@ class APlagueTaleRatsCharacter : public ACharacter
 	// Health Component
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Shooting, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
+
+	UPROPERTY()
+	TObjectPtr<APlagueTalePlayerController> PlayerControllerRef;
 	
 	FVector CameraLocation;
 	FRotator CameraRotation;
@@ -93,17 +96,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Health, meta = (AllowPrivateAccess = "true"))
 	float MaxPlayerHealth;
 
-	/** Returns CameraBoom subobject **/
+	/** Returns CameraBoom SubObject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	
-	/** Returns FollowCamera subobject **/
+	/** Returns FollowCamera SubObject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	// returns if the player is shooting or not
 	FORCEINLINE bool GetIsShooting() const {return IsShooting;}
-
-	UFUNCTION()
-	void CustomTakeDamage();
 	
 protected:
 
@@ -122,9 +122,9 @@ protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	// To add mapping context
-	virtual void BeginPlay();
+	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaSeconds);
+	virtual void Tick(float DeltaSeconds) override;
 
 };
 

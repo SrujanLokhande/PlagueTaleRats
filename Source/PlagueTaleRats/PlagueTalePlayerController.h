@@ -3,8 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "PlagueTalePlayerController.generated.h"
+
+class UHealthBarWidget;
 
 UCLASS()
 class PLAGUETALERATS_API APlagueTalePlayerController : public APlayerController
@@ -14,6 +15,7 @@ class PLAGUETALERATS_API APlagueTalePlayerController : public APlayerController
 public:
 	// Sets default values for this actor's properties
 	APlagueTalePlayerController();
+	void UpdateWidgetInfo();
 
 protected:
 	// Called when the game starts or when spawned
@@ -21,7 +23,10 @@ protected:
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UUserWidget> WidgetBlueprint;
+	
+	UPROPERTY()
+	UHealthBarWidget* HealthBarWidget;
+
 };

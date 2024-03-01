@@ -25,12 +25,12 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		UTextBlock* TXT_HealthText;
 
-	TWeakObjectPtr<APlagueTaleRatsCharacter> CharacterRef;
+	TObjectPtr<APlagueTaleRatsCharacter> CharacterRef;
 
-	void UpdateHealthText();
 
 	virtual void NativeConstruct() override;
 
 public:
 	void SetCharacterOwner(APlagueTaleRatsCharacter* InPlayerCharacter) {CharacterRef = InPlayerCharacter; }
+	void UpdateHealthInfo();
 };

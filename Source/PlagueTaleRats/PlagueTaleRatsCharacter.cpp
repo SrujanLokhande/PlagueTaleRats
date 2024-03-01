@@ -13,7 +13,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "HealthComponent.h"
 #include "InputActionValue.h"
+#include "PlagueTalePlayerController.h"
 #include "Utils.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -85,9 +87,10 @@ void APlagueTaleRatsCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+	PlayerControllerRef = Cast<APlagueTalePlayerController>(Controller);
+	if (PlayerControllerRef)
+	{		
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerControllerRef->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
@@ -98,7 +101,7 @@ void APlagueTaleRatsCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	FString FloatAsString = FString::Printf(TEXT("%f"), HealthComponent->GetCurrentHealth());
+	FString FloatAsString = FString::Printf(TEXT("%f"), CurrentPlayerHealth);
 	LOG(-1, FloatAsString);	
 	
 	if(IsShooting)
@@ -122,6 +125,8 @@ float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 	
 	HealthComponent->UpdateHealth(DamageAmount);
 	CurrentPlayerHealth = HealthComponent->GetCurrentHealth();
+	if(PlayerControllerRef)
+		PlayerControllerRef->UpdateWidgetInfo();
 	
 	return returnValue;
 	

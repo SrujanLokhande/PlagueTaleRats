@@ -3,7 +3,7 @@
 #include "HealthBarWidget.h"
 #include "PlagueTaleRatsCharacter.h"
 
-void UHealthBarWidget::UpdateHealthText()
+void UHealthBarWidget::UpdateHealthInfo()
 {
 	BAR_HealthBar->SetPercent(CharacterRef->CurrentPlayerHealth / CharacterRef->MaxPlayerHealth);
 
@@ -16,8 +16,11 @@ void UHealthBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	if(!CharacterRef.IsValid())
+	if(!CharacterRef)
 			return;
 
-	UpdateHealthText();
+	if(BAR_HealthBar == nullptr && TXT_HealthText == nullptr) return;
+
+	BAR_HealthBar->SetPercent(1.0f);
+	TXT_HealthText->SetText(FText::AsNumber(100.0f));
 }
