@@ -73,7 +73,8 @@ APlagueTaleRatsCharacter::APlagueTaleRatsCharacter()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>("Characters Health Component");
 
 	// Character default health
-	CurrentHealthCpp = 100.0f;
+	MaxPlayerHealth = HealthComponent->GetMaxHealth();
+	CurrentPlayerHealth = MaxPlayerHealth;
 	IsShooting = false;
 	DistanceFromCamera = 500.0f;
 }
@@ -111,13 +112,6 @@ void APlagueTaleRatsCharacter::Tick(float DeltaSeconds)
 	}
 }
 
-void APlagueTaleRatsCharacter::CustomTakeDamage()
-{
-	CurrentHealthCpp = CurrentHealthCpp - 10;
-	// FString FloatAsString = FString::Printf(TEXT("%f"), CurrentHealthCpp);
-	// GEngine->AddOnScreenDebugMessage(-3, 0.5f, FColor::Black,FloatAsString);
-}
-
 float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent,	AController* EventInstigator, AActor* DamageCauser)
 {
 	const float returnValue =  Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -125,8 +119,10 @@ float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 	{
 		return returnValue;
 	}
-
+	
 	HealthComponent->UpdateHealth(DamageAmount);
+	CurrentPlayerHealth = HealthComponent->GetCurrentHealth();
+	
 	return returnValue;
 	
 }
