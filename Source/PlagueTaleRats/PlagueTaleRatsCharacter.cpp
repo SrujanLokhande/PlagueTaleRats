@@ -15,7 +15,6 @@
 #include "InputActionValue.h"
 #include "PlagueTalePlayerController.h"
 #include "Utils.h"
-#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY(LogTemplateCharacter);
 
@@ -100,9 +99,6 @@ void APlagueTaleRatsCharacter::BeginPlay()
 void APlagueTaleRatsCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	FString FloatAsString = FString::Printf(TEXT("%f"), CurrentPlayerHealth);
-	LOG(-1, FloatAsString);	
 	
 	if(IsShooting)
 	{		

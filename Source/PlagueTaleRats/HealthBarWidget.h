@@ -27,8 +27,10 @@ protected:
 
 	TObjectPtr<APlagueTaleRatsCharacter> CharacterRef;
 
-
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(Transient, meta = (BindWidgetAnim))
+	UWidgetAnimation* DamageAnimation;	
 
 public:
 	void SetCharacterOwner(APlagueTaleRatsCharacter* InPlayerCharacter) {CharacterRef = InPlayerCharacter; }
