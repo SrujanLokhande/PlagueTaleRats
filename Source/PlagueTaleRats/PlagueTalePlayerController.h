@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PlagueTalePlayerController.generated.h"
 
+class UHealthWidgetCpp;
 class UHealthBarWidget;
 
 UCLASS()
@@ -23,10 +24,13 @@ protected:
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	TSubclassOf<UUserWidget> WidgetBlueprint;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	// TSubclassOf<UUserWidget> WidgetBlueprint;
 	
+	// UPROPERTY()
+	// UHealthBarWidget* HealthBarWidget;
+
 	UPROPERTY()
-	UHealthBarWidget* HealthBarWidget;
+	UHealthWidgetCpp* HealthWidgetCpp;
 
 };

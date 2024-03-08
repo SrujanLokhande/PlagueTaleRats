@@ -2,11 +2,11 @@
 
 #include "HealthBarWidget.h"
 #include "PlagueTaleRatsCharacter.h"
-#include "Animation/UMGSequencePlayer.h"
 
 void UHealthBarWidget::UpdateHealthInfo()
 {
 	if(DamageAnimation)
+		
 		PlayAnimation(DamageAnimation);
 	
 	BAR_HealthBar->SetPercent(CharacterRef->CurrentPlayerHealth / CharacterRef->MaxPlayerHealth);

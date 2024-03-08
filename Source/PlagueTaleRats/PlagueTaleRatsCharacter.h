@@ -6,6 +6,7 @@
 #include "Logging/LogMacros.h"
 #include "PlagueTaleRatsCharacter.generated.h"
 
+class ULegacyCameraShake;
 class APlagueTalePlayerController;
 class USceneComponent;
 class USkeletalMeshComponent;
@@ -65,6 +66,9 @@ class APlagueTaleRatsCharacter : public ACharacter
 
 	UPROPERTY()
 	TObjectPtr<APlagueTalePlayerController> PlayerControllerRef;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UCameraShakeBase> CameraShake;
 	
 	FVector CameraLocation;
 	FRotator CameraRotation;

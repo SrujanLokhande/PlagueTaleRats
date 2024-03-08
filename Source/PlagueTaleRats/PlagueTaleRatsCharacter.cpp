@@ -92,7 +92,7 @@ void APlagueTaleRatsCharacter::BeginPlay()
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerControllerRef->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
+		}		
 	}	
 }
 
@@ -123,7 +123,8 @@ float APlagueTaleRatsCharacter::TakeDamage(float DamageAmount, FDamageEvent cons
 	CurrentPlayerHealth = HealthComponent->GetCurrentHealth();
 	if(PlayerControllerRef)
 		PlayerControllerRef->UpdateWidgetInfo();
-	
+
+	PlayerControllerRef->PlayerCameraManager->StartCameraShake(CameraShake, 1.0f);
 	return returnValue;
 	
 }
