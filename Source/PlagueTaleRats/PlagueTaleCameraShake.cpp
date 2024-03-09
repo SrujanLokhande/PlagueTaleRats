@@ -9,9 +9,9 @@ UPlagueTaleCameraShake::UPlagueTaleCameraShake()
 	OscillationBlendInTime = 0.05f;
 	OscillationBlendOutTime = 0.05f;
 
-	RotOscillation.Pitch.Amplitude = FMath::RandRange(5.0f, 10.0f);
-	RotOscillation.Pitch.Frequency = FMath::RandRange(25.0f, 35.0f);
+	RotOscillation.Pitch.Amplitude = FMath::RandRange(2.0f, 5.0f);
+	RotOscillation.Pitch.Frequency = FMath::RandRange(20.0f, 30.0f);
 
-	RotOscillation.Yaw.Amplitude = FMath::RandRange(5.0f, 10.0f);
-	RotOscillation.Yaw.Frequency = FMath::RandRange(25.0f, 35.0f);
+	RotOscillation.Yaw.Amplitude = FMath::RandRange(2.0f, 5.0f);
+	RotOscillation.Yaw.Frequency = FMath::RandRange(20.0f, 30.0f);
 }

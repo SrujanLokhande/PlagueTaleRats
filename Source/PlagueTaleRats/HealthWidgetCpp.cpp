@@ -10,9 +10,6 @@
 #include "Components/HorizontalBox.h"
 #include "Components/HorizontalBoxSlot.h"
 #include "Components/SizeBox.h"
-#include "Fonts/SlateFontInfo.h"
-#include "Fonts/CompositeFont.h"
-#include "Styling/SlateStyle.h"
 #include "Components/SizeBoxSlot.h"
 
 // called when the widget is constructed on the players screen
@@ -92,20 +89,35 @@ TSharedRef<SWidget> UHealthWidgetCpp::RebuildWidget()
 			TextBoxSlot->SetVerticalAlignment(VAlign_Center);					
 		}
 
+		// Size box for progress bar
+		USizeBox* BarSizeBox = WidgetTree->ConstructWidget<USizeBox>(USizeBox::StaticClass(), TEXT("ProgressBarSizeBox"));
+		HorizontalBox->AddChildToHorizontalBox(BarSizeBox);
+
+		if(UHorizontalBoxSlot* BarSizeBoxSlot = Cast<UHorizontalBoxSlot>(BarSizeBox->Slot))
+		{
+			BarSizeBoxSlot->SetHorizontalAlignment(HAlign_Fill);
+			BarSizeBoxSlot->SetVerticalAlignment(VAlign_Center);
+			BarSizeBox->SetHeightOverride(30.0f);
+			BarSizeBox->SetWidthOverride(550.0f);
+		}
+
 		// creates the health bar as the child of the Horizontal box
 		BAR_HealthBar = WidgetTree->ConstructWidget<UProgressBar>(UProgressBar::StaticClass(), TEXT("ProgressBar"));
-		HorizontalBox->AddChildToHorizontalBox(BAR_HealthBar);
+		BarSizeBox->AddChild(BAR_HealthBar);
 		
-		if(UHorizontalBoxSlot* HealthBarSlot = Cast<UHorizontalBoxSlot>(BAR_HealthBar->Slot))
+		if(USizeBoxSlot* HealthBarSlot = Cast<USizeBoxSlot>(BAR_HealthBar->Slot))
 		{
 			HealthBarSlot->SetHorizontalAlignment(HAlign_Fill);
 			HealthBarSlot->SetVerticalAlignment(VAlign_Fill);			
 			BAR_HealthBar->SetFillColorAndOpacity(FLinearColor::Red);
-			BAR_HealthBar->SetBarFillType(EProgressBarFillType::BottomToTop);
+			BAR_HealthBar->SetBarFillType(EProgressBarFillType::LeftToRight);
+			BAR_HealthBar->SetBarFillStyle(EProgressBarFillStyle::Scale);
 		}		
 	}	
 	return Super::RebuildWidget();
 }
+
+
 
 
 

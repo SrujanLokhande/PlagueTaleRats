@@ -32,7 +32,7 @@ protected:
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* DamageAnimation;
 
-	virtual TSharedRef<SWidget> RebuildWidget() override;	
+	virtual TSharedRef<SWidget> RebuildWidget() override;
 
 public:
 	void SetCharacterOwner(APlagueTaleRatsCharacter* InPlayerCharacter) {CharacterRef = InPlayerCharacter; }

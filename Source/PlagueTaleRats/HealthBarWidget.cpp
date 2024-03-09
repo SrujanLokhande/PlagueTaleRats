@@ -3,10 +3,10 @@
 #include "HealthBarWidget.h"
 #include "PlagueTaleRatsCharacter.h"
 
+// called whenever the player takes damage
 void UHealthBarWidget::UpdateHealthInfo()
 {
-	if(DamageAnimation)
-		
+	if(DamageAnimation)		
 		PlayAnimation(DamageAnimation);
 	
 	BAR_HealthBar->SetPercent(CharacterRef->CurrentPlayerHealth / CharacterRef->MaxPlayerHealth);
@@ -16,6 +16,7 @@ void UHealthBarWidget::UpdateHealthInfo()
 	TXT_HealthText->SetText(FText::AsNumber(CharacterRef->CurrentPlayerHealth, &Opts));
 }
 
+// sets the default values
 void UHealthBarWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

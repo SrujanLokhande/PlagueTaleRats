@@ -65,7 +65,7 @@ void ANiagaraRatsComponent::EndOverlap(UPrimitiveComponent* OverlappedComponent,
 
 void ANiagaraRatsComponent::GiveDamage()
 {	
-	UGameplayStatics::ApplyDamage(CharacterRef, 10.0f, GetInstigatorController(), this, UDamageType::StaticClass());			
+	UGameplayStatics::ApplyDamage(CharacterRef, 5.0f, GetInstigatorController(), this, UDamageType::StaticClass());			
 }
 
 void ANiagaraRatsComponent::DamagePlayer()
